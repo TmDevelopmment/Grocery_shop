@@ -94,6 +94,47 @@ const CartSidebar = () => {
               )}
         </div>
 
+        {/* Footer */}
+        {items.length > 0 && (
+          <div className="p-5 border-t border-app-border space-y-3">
+            <div className="flex justify-between mb-2">
+              <span className="text-sm text-app-text-light">Subtotal</span>
+              <span className="text-sm font-medium">{currency}{cartTotal.toFixed(2)}</span>
+            </div>
+
+            <div className="flex justify-between mb-4">
+              <span className="text-sm text-app-text-light">Delivery Fee</span>
+              <span className={`text-sm font-medium ${deliveryFee === 0 ? "text-green-600" : ""}`}>
+                {deliveryFee === 0 ? "Free" : `${currency}${deliveryFee.toFixed(2)}`}
+              </span>
+            </div>
+
+            {deliveryFee > 0 && <p className="text-xs text-app-text-light">Free delivery on orders above {currency} 20!</p>}
+
+            <div className="flex justify-between mb-4 border-t border-app-border pt-3">
+              <span className="text-base font-semibold">Total</span>
+              <span className="text-base font-semibold">{currency}{grandTotal.toFixed(2)}</span>
+            </div>
+
+            <button
+              onClick={() => {
+                setIsCartOpen(false);
+                navigate("/checkout");
+                window.scrollTo(0, 0);
+              }}
+              className="w-full py-3 bg-app-green text-white font-medium rounded-lg hover:bg-app-green-dark transition-colors"
+            >
+              Proceed to Checkout
+            </button>
+            <button
+              onClick={clearCart}
+              className="w-full py-3 mt-2 bg-app-error text-white font-medium rounded-lg hover:bg-app-error-dark transition-colors"
+            >
+              Clear Cart
+            </button>
+
+          </div>
+        )}
       </div>
     </>
   );
