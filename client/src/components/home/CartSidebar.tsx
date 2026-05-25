@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
-import { MinusIcon, PlusIcon, ShoppingBagIcon, ShoppingCartIcon, TrashIcon, XIcon } from "lucide-react";
+import { MinusIcon, PlusIcon, ShoppingBagIcon, ShoppingCartIcon, Trash2,XIcon } from "lucide-react";
 
 const CartSidebar = () => {
   const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "$";
@@ -84,7 +84,7 @@ const CartSidebar = () => {
                           {currency}{(item.product.price * item.quantity).toFixed(2)}
                         </span>
                         <button className="p-1 text-app-text-light hover:text-app-error transition-colors" onClick={() => removeFromCart(item.product._id)}>
-                          <TrashIcon className="size-4"/>
+                          <Trash2 className="size-4"/>
                         </button>
                       </div>
                     </div>
