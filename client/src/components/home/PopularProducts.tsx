@@ -3,7 +3,7 @@ import type { Product } from "../../types"
 import { dummyProducts } from "../../assets/assets"
 import { Link } from "react-router-dom"
 import { ArrowRightIcon } from "lucide-react"
-import ProductCard from "./ProductCard"
+import ProductCard from "../ProductCard"
 
 const PopularProducts = () => {
 
@@ -11,7 +11,7 @@ const PopularProducts = () => {
 
     useState(() => {
         setProducts(dummyProducts.slice(0, 10))
-    })
+    }, [])
 
   return (
     <section className="pb-16">

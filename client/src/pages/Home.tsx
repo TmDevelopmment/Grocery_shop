@@ -4,7 +4,7 @@ import HomeCategories from "../components/home/HomeCategories"
 import PopularProducts from "../components/home/PopularProducts"
 import AddPromoBanner from "../components/home/AddPromoBanner"
 import Newsletter from "../components/home/Newsletter"
-import CartSidebar from "../components/home/CartSidebar"
+import CartSidebar from "../components/CartSidebar"
 
 
 const Home = () => {

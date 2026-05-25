@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../../context/CartContext";
+import { useCart } from "../context/CartContext";
 import { MinusIcon, PlusIcon, ShoppingBagIcon, ShoppingCartIcon, Trash2,XIcon } from "lucide-react";
 
 const CartSidebar = () => {

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import type { Product } from "../../types";
+import type { Product } from "../types";
 import { Plus, Star } from "lucide-react";
-import { useCart } from "../../context/CartContext";
+import { useCart } from "../context/CartContext";
 
 interface Props {
   product: Product;
