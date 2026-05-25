@@ -1,7 +1,8 @@
+import MyOrders from "../pages/MyOrders"
 
 const ProtectedRoute = () => {
   return (
-    <div>ProtectedRoute</div>
+      <MyOrders />
   )
 }
 
