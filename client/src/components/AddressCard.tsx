@@ -9,8 +9,8 @@ interface AddressCardProps {
 
 const AddressCard = ({addr, onEditHandler, setAddresses} : AddressCardProps) => {
     
-    const handleDelete = () => {
-        setAddresses((prev) => prev.filter((a) => a._id !== addr._id));
+    const handleDelete = (id: string) => {
+        setAddresses((prev) => prev.filter((a) => a._id !== id));
     }
 
   return (
@@ -41,7 +41,7 @@ const AddressCard = ({addr, onEditHandler, setAddresses} : AddressCardProps) => 
             </button>
 
             <button
-                onClick={handleDelete}
+                onClick={() => handleDelete(addr._id)}
                 className="px-2 py-1 text-black text-xs font-semibold rounded-xl hover:text-app-error transition-colors flex items-center gap-1"
                 aria-label="Delete address"
             >
