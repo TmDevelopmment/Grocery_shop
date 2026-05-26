@@ -21,7 +21,7 @@ const OrderTracking = () => {
   } | null>(null);
 
   useEffect(() => {
-    setOrder(dummyDashboardOrdersData.find((order) => order.id === id) as any);
+    setOrder(dummyDashboardOrdersData.find((order) => order._id === id) as any);
     setLoading(false);
   }, [id, navigate]);
 
