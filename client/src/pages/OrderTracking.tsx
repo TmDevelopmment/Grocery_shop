@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Order } from "../types";
-import { dummyDashboardOrdersData } from "../assets/assets";
 import Loading from "../components/Loading";
 import { ArrowLeftIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import OrderOTP from "../components/OrderTracking/OrderOTP";
 import LiveMap from "../components/OrderTracking/LiveMap";
 import OrderTimeLine from "../components/OrderTracking/OrderTimeLine";
+import api from "../configs/api";
+import toast from "react-hot-toast";
 
 const OrderTracking = () => {
 
@@ -21,9 +22,41 @@ const OrderTracking = () => {
   } | null>(null);
 
   useEffect(() => {
-    setOrder(dummyDashboardOrdersData.find((order) => order._id === id) as any);
-    setLoading(false);
+    api.get(`/orders/${id}`).
+      then((res) => setOrder(res.data.order)).
+      catch((err: any) => {
+        toast.error(err.response?.data?.message || err.message);
+        navigate("/orders");
+      }).
+      finally(() => setLoading(false));
   }, [id, navigate]);
+
+  useEffect(() => {
+    if (!order || ["Delivered", "Cancelled", "Placed"].includes(order.status)) return;
+
+    const fetchLiveLocation = async () => {
+      try {
+        const { data } = await api.get(`/orders/${id}/location`);
+        if (data.liveLocation?.lat && data.liveLocation?.lng && data.liveLocation?.updatedAt) {
+          setLiveLocation({
+            lat: data.liveLocation.lat,
+            lng: data.liveLocation.lng,
+          });
+        }
+
+        // Also update order status if it changed
+        if (data.status && data.status !== order.status) {
+          setOrder((prev) => prev ? { ...prev, status: data.status } : prev);
+        }
+      } catch (error: any) {
+        toast.error(error.response?.data?.message || error.message);
+      }
+    }
+    fetchLiveLocation();
+
+    const interval = setInterval(fetchLiveLocation, 10000)
+    return () => clearInterval(interval);
+  }, [id, order?.status]);
 
   if (loading) return <Loading />;
   if (!order) return null;
@@ -43,7 +76,7 @@ const OrderTracking = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-semibold text-app-green">
-              Order #{order._id.slice(-8).toUpperCase()}
+              Order #{order.id.slice(-8).toUpperCase()}
             </h1>
             <p className="text-sm text-app-text-light mt-1">
               Placed on{" "}
@@ -68,7 +101,7 @@ const OrderTracking = () => {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
-          
+
           {/* Left side - map */}
           <div className="lg:col-span-2 space-y-6">
             <OrderOTP order={order} />
@@ -105,9 +138,9 @@ const OrderTracking = () => {
               </h3>
               <p className="text-sm text-app-text-light mt-2 leading-relaxed">
                 {order?.shippingAddress.label}
-                <br/>
+                <br />
                 {order?.shippingAddress.address}
-                <br/>
+                <br />
                 {order?.shippingAddress.city}, {order?.shippingAddress.state} {order?.shippingAddress.zip}
               </p>
             </div>

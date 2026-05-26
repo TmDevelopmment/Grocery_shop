@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import type { Product } from "../types";
-import { categoriesData, dummyProducts } from "../assets/assets";
+import { categoriesData } from "../assets/assets";
 import { ChevronDown, HomeIcon, SlidersHorizontal, XIcon } from "lucide-react";
 import ProductCard from "../components/ProductCard";
 import Loading from "../components/Loading";
 import FilterPannel from "../components/FilterPannel";
+import api from "../configs/api";
+import { toast } from "react-hot-toast/headless";
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,9 +25,26 @@ const Products = () => {
 
   const fetchProducts = async () => {
     setLoading(true);
-    setProducts(
-      dummyProducts.filter((p) => p.category === category || category === ""),
-    );
+    try {
+      const params = new URLSearchParams();
+      if (category) params.set("category", category);
+      if (organic) params.set("organic", organic);
+      if (sort) params.set("sort", sort);
+      if (page) params.set("page", String(page));
+      if (minPrice) params.set("minPrice", minPrice);
+      if (maxPrice) params.set("maxPrice", maxPrice);
+      params.set("page", String(page));
+      params.set("limit", "12");
+
+      const { data } = await api.get(`/products?${params.toString()}`);
+      setProducts(data.products);
+      setTotalPages(data.totalPages);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || error.message);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
     setLoading(false);
   };
 
@@ -149,7 +168,7 @@ const Products = () => {
                 {products.map(
                   (product) =>
                     product.stock > 0 && (
-                      <ProductCard key={product._id} product={product} />
+                      <ProductCard key={product.id} product={product} />
                     ),
                 )}
               </div>

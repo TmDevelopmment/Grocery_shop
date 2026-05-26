@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import type { Order } from "../types";
 import { useCart } from "../context/CartContext";
-import { dummyDashboardOrdersData } from "../assets/assets";
 import Loading from "../components/Loading";
 import { CalendarIcon, ChevronRightIcon, PackageIcon } from "lucide-react";
+import { toast } from "react-hot-toast";
+import api from "../configs/api";
 
 const MyOrders = () => {
   const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "Rs";
@@ -19,8 +20,16 @@ const MyOrders = () => {
   const { clearCart } = useCart();
 
   const fetchOrders = async () => {
-    setOrders(dummyDashboardOrdersData as any);
-    setLoading(false);
+    setLoading(true);
+    try {
+      const params = activeTab !== "all" ? `?status=${activeTab}` : "";
+      const { data } = await api.get(`/orders${params}`);
+      setOrders(data.orders);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -79,8 +88,8 @@ const MyOrders = () => {
           <div className="space-y-4">
             {orders.map((order) => (
               <Link
-                key={order._id}
-                to={`/orders/${order._id}`}
+                key={order.id}
+                to={`/orders/${order.id}`}
                 className="block bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition-shadow duration-200"
               >
                 {/* order id, date & status: */}
@@ -88,7 +97,7 @@ const MyOrders = () => {
                   {/* left */}
                   <div>
                     <p className="text-sm text-app-green font-medium">
-                      Order #{order._id.slice(-8).toUpperCase()}
+                      Order #{order.id.slice(-8).toUpperCase()}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
                       <CalendarIcon className="size-3 text-app-text-light" />
@@ -115,7 +124,7 @@ const MyOrders = () => {
                 <div className="flex items-center gap-2 mt-4">
                   {order.items.slice(0, 4).map((product) => (
                     <img
-                      key={product._id}
+                      key={product.id}
                       src={product.image}
                       alt={product.name}
                       className="size-12 sm:size-14 rounded-lg object-cover border border-app-border"

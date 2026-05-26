@@ -1,5 +1,8 @@
 import { CheckIcon, MapPinIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import type { Address } from "../types";
+import { useAuth } from "../context/AuthContext";
+import api from "../configs/api";
+import toast from "react-hot-toast";
 
 interface AddressCardProps {
     addr: Address;
@@ -9,12 +12,23 @@ interface AddressCardProps {
 
 const AddressCard = ({addr, onEditHandler, setAddresses} : AddressCardProps) => {
     
-    const handleDelete = (id: string) => {
-        setAddresses((prev) => prev.filter((a) => a._id !== id));
-    }
+    const { updateUser } = useAuth();
+
+    const handleDelete = async (id: string) => {
+        try {
+            const confirm = window.confirm("Are you sure you want to delete this address?");
+            if (!confirm) return;
+            const {data} =await api.delete(`/addresses/${id}`);
+            setAddresses(data.addresses);
+            updateUser({ addresses: data.addresses });
+            toast.success("Address deleted successfully");
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || error.message || "Failed to delete address");
+        }
+    };
 
   return (
-    <div key={addr._id} className="max-w-3xl bg-white rounded-2xl p-6 flex items-start justify-between shadow">
+    <div key={addr.id} className="max-w-3xl bg-white rounded-2xl p-6 flex items-start justify-between shadow">
         <div className="flex gap-4">
             <div className="size-10 rounded-xl bg-app-cream flex-center shrink-0">
                 <MapPinIcon className="size-5 text-app-green" />
@@ -41,7 +55,7 @@ const AddressCard = ({addr, onEditHandler, setAddresses} : AddressCardProps) => 
             </button>
 
             <button
-                onClick={() => handleDelete(addr._id)}
+                onClick={() => handleDelete(addr.id)}
                 className="px-2 py-1 text-black text-xs font-semibold rounded-xl hover:text-app-error transition-colors flex items-center gap-1"
                 aria-label="Delete address"
             >

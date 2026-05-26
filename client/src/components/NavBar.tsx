@@ -15,13 +15,11 @@ import {
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 
 const NavBar = () => {
-  const user: any = {
-    name: "John Doe",
-    email: "johndoe@example.com",
-    isAdmin: true,
-  };
+  
+  const { user, logout } = useAuth();
 
   const { cartCount, setIsCartOpen } = useCart();
 
@@ -38,6 +36,7 @@ const NavBar = () => {
   }
 
   const handleLogout = () => {
+    logout();
     setUserMenuOpen(false);
     navigate("/");
   }
