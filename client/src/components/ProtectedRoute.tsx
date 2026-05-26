@@ -1,13 +1,7 @@
-import Addresses from "../pages/Addresses"
-import MyOrders from "../pages/MyOrders"
+import { Outlet } from "react-router-dom"
 
 const ProtectedRoute = () => {
-  return (
-      <div>
-        <MyOrders />
-      <Addresses />
-      </div>
-  )
+  return <Outlet />
 }
 
 export default ProtectedRoute
