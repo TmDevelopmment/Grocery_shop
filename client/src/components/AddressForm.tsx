@@ -17,7 +17,7 @@ const AddressForm = ({
           onSubmit={handleSubmit}
           className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-lg aniimate-fade-in"
         >
-          <div>
+          <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold text-app-green">
               {editingId ? "Edit Address" : "Add New Address"}
             </h2>
