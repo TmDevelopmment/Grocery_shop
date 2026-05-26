@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Address } from "../types";
 import { dummyAddressData } from "../assets/assets";
-import { MapPinIcon, PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { MapPinIcon, PlusIcon } from "lucide-react";
 import Loading from "../components/Loading";
 import AddressCard from "../components/AddressCard";
 import AddressForm from "../components/AddressForm";
@@ -114,22 +114,6 @@ const Addresses = () => {
             ))}
           </div>
         )}
-      </div>
-
-      <div className="flex items-center gap-1">
-        <button
-          className="px-2 py-1 bg-app-green text-white text-xs font-semibold rounded-xl hover:bg-app-green-light transition-colors flex items-center gap-1"
-          onClick={() => onEditHandler(addresses[0])}
-        >
-          <PencilIcon className="size-4" />
-        </button>
-
-        <button
-          onClick={() => handleDelete(addresses._id)}
-          className="px-2 py-1 bg-red-500 text-white text-xs font-semibold rounded-xl hover:bg-red-600 transition-colors flex items-center gap-1"
-        >
-          <Trash2Icon className="size-4" />
-        </button>
       </div>
     </div>
   );
