@@ -1,8 +1,12 @@
+import Addresses from "../pages/Addresses"
 import MyOrders from "../pages/MyOrders"
 
 const ProtectedRoute = () => {
   return (
-      <MyOrders />
+      <div>
+        <MyOrders />
+      <Addresses />
+      </div>
   )
 }
 
