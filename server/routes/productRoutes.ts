@@ -1,5 +1,5 @@
 import express from 'express';
-import { createProduct, deleteProduct, getFlashDeals, getProducts, updateProduct } from '../controller/productController.js';
+import { createProduct, deleteProduct, getFlashDeals, getProductById, getProducts, updateProduct } from '../controller/productController.js';
 import auth from '../middlewares/auth.js';
 import admin from '../middlewares/admin.js';
 
@@ -7,7 +7,7 @@ const productRouter = express.Router();
 
 productRouter.get("/flash-deals", getFlashDeals);
 productRouter.get("/", getProducts);
-productRouter.get("/:id", getProducts);
+productRouter.get("/:id", getProductById);
 productRouter.post("/", auth, admin, createProduct);
 productRouter.put("/:id", auth, admin, updateProduct);
 productRouter.delete("/:id", auth, admin, deleteProduct);

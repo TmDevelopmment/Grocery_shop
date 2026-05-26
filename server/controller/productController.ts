@@ -2,21 +2,21 @@ import { Request, Response } from "express";
 import { prisma } from "../config/prisma.js";
 
 // Get /api/products/flash-deals
-export const getFlashDeals = (req: Request, res: Response) => {
-    const products = prisma.product.findMany({
+export const getFlashDeals = async (req: Request, res: Response) => {
+    const products = await prisma.product.findMany({
         where: { stock: { gt: 0 } },
         orderBy: { originalPrice: "desc" },
     });
-    
+
     const productWithDiscount = products.map((p: any) => {
         const discount = p.originalPrice && p.price ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100) : 0;
         return {
             ...p,
-            discount
+            discount,
         };
     });
 
-    res.json({products: productWithDiscount.slice(0, 8)});
+    res.json({ products: productWithDiscount.slice(0, 8) });
 };
 
 // Get /api/products
