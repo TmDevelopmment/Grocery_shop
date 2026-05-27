@@ -16,9 +16,9 @@ const admin = async (req: Request, res: Response, next: NextFunction) => {
 
         const adminEmails = process.env.ADMIN_EMAIL ? process.env.ADMIN_EMAIL.split(",").map((e) => e.trim().toLowerCase()) : [];
         
-        if (!adminEmails.includes(user.email)) {
-           if(req.user) req.user.isAdmin = true;
-           next();
+        if (adminEmails.includes(user.email)) {
+            if(req.user) req.user.isAdmin = true;
+            next();
         } else {
             return res.status(403).json({ message: "Forbidden: Admins only" });
         }
