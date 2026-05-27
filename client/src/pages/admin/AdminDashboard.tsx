@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { PackageIcon, UsersIcon, ShoppingBagIcon, AlertTriangleIcon } from "lucide-react";
 import Loading from "../../components/Loading";
 import { dummyAdminDashboardData, statusColors } from "../../assets/assets";
+import api from "../../configs/api";
+import { toast } from "react-hot-toast/headless";
 
 interface Stats {
     totalOrders: number;
@@ -20,10 +22,15 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setTimeout(() => {
-            setStats(dummyAdminDashboardData);
-            setLoading(false);
-        }, 1000);
+        api.get("/admin/stats")
+            .then((res) => {
+                setStats(res.data);
+            })
+            .catch((err: any) => {
+                toast.error(err.response?.data?.message || err.message);
+            }).finally(() => {
+                setLoading(false);
+            });
     }, []);
 
     const cards = stats

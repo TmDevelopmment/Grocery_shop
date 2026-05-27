@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { PlusIcon, XIcon, TruckIcon, PhoneIcon, MailIcon } from "lucide-react";
 import type { DeliveryPartner } from "../../types";
 import Loading from "../../components/Loading";
-import { dummyDeliveryPartnerData } from "../../assets/assets";
+import toast from "react-hot-toast";
+import api from "../../configs/api";
 
 export default function AdminDeliveryPartners() {
     const [partners, setPartners] = useState<DeliveryPartner[]>([]);
@@ -12,8 +13,14 @@ export default function AdminDeliveryPartners() {
     const [form, setForm] = useState({ name: "", email: "", password: "", phone: "", vehicleType: "bike" });
 
     const fetchPartners = async () => {
-        setPartners(dummyDeliveryPartnerData as any)
-        setTimeout(() => setLoading(false), 1000)
+        try {
+            const { data } = await api.get("/admin/delivery-partners");
+            setPartners(data);
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || error.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
