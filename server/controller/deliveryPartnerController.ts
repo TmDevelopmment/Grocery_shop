@@ -16,19 +16,26 @@ export const loginPartner = async (req: Request, res: Response) => {
         return res.status(400).json({ message: "Please provide email and password" });
     }
 
-    const partner = await prisma.deliveryPartner.findUnique({ where: { email } });
+    const normalizedEmail = String(email).toLowerCase();
 
-    if (!partner || partner.password !== password) {
-        return res.status(401).json({ message: "Invalid email or password" });
+    const partner = await prisma.deliveryPartner.findUnique({ where: { email: normalizedEmail } });
+
+    if (!partner) {
+        return res.status(404).json({ message: "Account not found" });
     }
 
     if (!partner.isActive) {
         return res.status(403).json({ message: "Account is inactive. Please contact support." });
     }
 
-    const isMatch = await bcrypt.compare(password, partner.password);
+    if (!partner.password) {
+        return res.status(500).json({ message: "Account has no password set" });
+    }
+
+    // trim input password to avoid accidental whitespace mismatches
+    const isMatch = await bcrypt.compare(String(password).trim(), partner.password);
     if (!isMatch) {
-        return res.status(401).json({ message: "Invalid email or password" });
+        return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const token = generateToken(partner.id);

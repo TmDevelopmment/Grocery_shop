@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 export default function AdminLayout() {
 
     const { user } = useAuth();
+    console.log(user);
 
     if (!user?.isAdmin) return <Navigate to="/" replace />
 

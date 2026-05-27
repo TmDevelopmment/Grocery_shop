@@ -1,16 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BikeIcon } from "lucide-react";
 import { heroSectionData } from "../../assets/assets";
+import { toast } from "react-hot-toast";
+import api from "../../configs/api";
+import { useNavigate } from "react-router";
 
 export default function DeliveryLogin() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
-
+        setLoading(true);
+        try {
+            const { data } = await api.post("/delivery/login", { email, password });
+            localStorage.setItem("delivery_partner", JSON.stringify(data.partner));
+            localStorage.setItem("delivery_token", data.token);
+            toast.success("Login successful");
+            navigate("/delivery");
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || error.message || "Login failed");
+        } finally {
+            setLoading(false);
+        }
     };
+
+    useEffect(() => {
+        if (localStorage.getItem("delivery_token")) {
+            navigate("/delivery");
+        }
+    }, []);
 
     return (
         <div className="min-h-screen flex">

@@ -80,7 +80,7 @@ export const createDeliveryPartner = async (req: Request, res: Response) => {
       .json({ message: "Please provide all required fields" });
   }
 
-  const hashPassword = await bcrypt.hashSync(password, 10);
+  const hashPassword = await bcrypt.hash(password, 10);
 
   const partner = await prisma.deliveryPartner.create({
     data: {
