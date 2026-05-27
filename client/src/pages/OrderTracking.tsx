@@ -23,7 +23,7 @@ const OrderTracking = () => {
 
   useEffect(() => {
     api.get(`/orders/${id}`).
-      then((res) => setOrder(res.data.order)).
+      then((res) => setOrder(res.data)).
       catch((err: any) => {
         toast.error(err.response?.data?.message || err.message);
         navigate("/orders");
@@ -31,6 +31,7 @@ const OrderTracking = () => {
       finally(() => setLoading(false));
   }, [id, navigate]);
 
+  // live location every 10 seconds if order is not delivered or cancelled
   useEffect(() => {
     if (!order || ["Delivered", "Cancelled", "Placed"].includes(order.status)) return;
 
@@ -133,7 +134,7 @@ const OrderTracking = () => {
           <div className="space-y-6">
             {/* Delivery Address */}
             <div className="bg-white rounded-2xl p-6">
-              <h3>
+              <h3 className="text-sm font-semibold text-app-green mb-3 flex items-center gap-2">
                 <MapPinIcon className="size-4" /> Delivery Address
               </h3>
               <p className="text-sm text-app-text-light mt-2 leading-relaxed">
@@ -148,10 +149,9 @@ const OrderTracking = () => {
             {/* Items */}
             <div className="bg-white rounded-2xl p-6">
               <h3 className="text-sm font-semibold text-app-green mb-3">Items ({order.items.length})</h3>
-            </div>
-            <div className="space-y-4">
+              <div className="space-y-4">
               {order.items.map((item, i) => (
-                <div key={i} className="flex items-center gap-4">
+                <div key={i} className="flex items-center gap-4 border-t pt-4 border-app-border">
                   <img src={item.image} alt={item.name} className="size-16 rounded-lg object-cover" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-app-green truncate">{item.name}</p>
@@ -161,6 +161,8 @@ const OrderTracking = () => {
                 </div>
               ))}
             </div>
+            </div>
+            
 
             <div className="bg-white rounded-2xl p-6">
               <div className="flex justify-between text-sm text-app-text-light">
@@ -175,7 +177,7 @@ const OrderTracking = () => {
                 <span>Tax</span>
                 <span>{currency}{order?.tax.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-sm font-semibold text-app-green">
+              <div className="flex justify-between text-sm font-semibold text-app-green border-t pt-4 mt-4 border-app-border">
                 <span>Total</span>
                 <span>{currency}{order?.total.toFixed(2)}</span>
               </div>

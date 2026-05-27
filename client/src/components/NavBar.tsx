@@ -141,7 +141,7 @@ const NavBar = () => {
                   <div onClick={() => setUserMenuOpen(false)}>
                     {!user && <Link to="/login" className="dropdown-link"><UserIcon size={16}/>Sign In</Link>}
                     {user && <Link to="/orders" className="dropdown-link"><PackageIcon size={16}/>My Orders</Link>}
-                    {user && <Link to="/address" className="dropdown-link"><MapPinIcon size={16}/>Address</Link>}
+                    {user && <Link to="/addresses" className="dropdown-link"><MapPinIcon size={16}/>Address</Link>}
                     {<Link to="/products" className="dropdown-link mg:hidden"><ArrowRightIcon size={16}/>My Products</Link>}
                     {<Link to="/deals" className="dropdown-link md:hidden"><ArrowRightIcon size={16}/>My Deals</Link>}
                     {user?.isAdmin && (

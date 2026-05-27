@@ -80,12 +80,14 @@ const Addresses = () => {
 
       if (editingId) {
         const { data } = await api.put(`/addresses/${editingId}`, payload);
-        setAddresses(data.addresses);
+        setAddresses(data);
+        setShowForm(false);
         updateUser({ addresses: data.addresses });
         toast.success("Address updated successfully");
       } else {
         const { data } = await api.post("/addresses", payload);
-        setAddresses(data.addresses);
+        setAddresses(data);
+        setShowForm(false);
         updateUser({ addresses: data.addresses });
         toast.success("Address added successfully");
       }
@@ -110,7 +112,7 @@ const Addresses = () => {
   useEffect(() => {
     api.get("/addresses")
       .then(({ data }) => {
-        setAddresses(data.addresses);
+        setAddresses(data);
       })
       .catch((error) => {
         toast.error(error.response?.data?.message || error.message);

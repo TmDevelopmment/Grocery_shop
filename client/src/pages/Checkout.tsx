@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Address } from "../types";
 import {
   ArrowLeftIcon,
@@ -22,6 +22,7 @@ const Checkout = () => {
 
   const { items, cartTotal, clearCart } = useCart();
   const { user } = useAuth();
+  console.log("Checkout user:", user);
 
   const [step, setStep] = useState("address");
   const [loading, setLoading] = useState(false);
@@ -82,10 +83,11 @@ const Checkout = () => {
   };
 
   // Populate addresses from user data on mount
-  useState(() => {
-    if (user?.address?.length) {
+  useEffect(() => {
+    if (user?.addresses?.length) {
+      console.log("User addresses:", user.addresses);
       const defaultAddr =
-        user.address.find((addr) => addr.isDefault) || user.address[0];
+        user.addresses.find((addr) => addr.isDefault) || user.addresses[0];
       setAddress({
         id: defaultAddr.id,
         label: defaultAddr.label,
@@ -98,7 +100,7 @@ const Checkout = () => {
         lng: defaultAddr.lng,
       });
     }
-  });
+  }, [user?.addresses]);
 
   if (items.length === 0) {
     return (

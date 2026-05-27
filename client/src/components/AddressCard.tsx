@@ -19,7 +19,7 @@ const AddressCard = ({addr, onEditHandler, setAddresses} : AddressCardProps) => 
             const confirm = window.confirm("Are you sure you want to delete this address?");
             if (!confirm) return;
             const {data} =await api.delete(`/addresses/${id}`);
-            setAddresses(data.addresses);
+            setAddresses(data);
             updateUser({ addresses: data.addresses });
             toast.success("Address deleted successfully");
         } catch (error: any) {
