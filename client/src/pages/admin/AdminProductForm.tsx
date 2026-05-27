@@ -62,7 +62,7 @@ export default function AdminProductForm() {
       if (imageFile) {
         const uploadData = new FormData();
         uploadData.append("image", imageFile);
-        const { data: uploadRes } = await api.post("/upload", uploadData);
+        const { data: uploadRes } = await api.post("/upload", uploadData)
         imageUrl = uploadRes.url;
       }
 
