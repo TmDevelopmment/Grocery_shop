@@ -29,7 +29,7 @@ export default function AdminOrders() {
     const fetchPartners = async () => {
         try {
             const { data } = await api.get("/admin/delivery-partners");
-            setPartners(data.partners.filter((p: DeliveryPartner) => p.isActive));
+            setPartners(data.filter((p: DeliveryPartner) => p.isActive));
         } catch (error: any) {
             toast.error(error?.response?.data?.message || error.message || "Failed to fetch delivery partners");
         }
@@ -53,7 +53,7 @@ export default function AdminOrders() {
     const handleAssign = async () => {
         if (!assignModal || !selectedPartner) return;
         try {
-            await api.get(`/admin/orders/${assignModal}/assign`, {partnerId: selectedPartner});
+            await api.post(`/admin/orders/${assignModal}/assign`, {partnerId: selectedPartner});
             toast.success("Delivery partner assigned");
             setAssignModal(null);
             setSelectedPartner("");
