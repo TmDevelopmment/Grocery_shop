@@ -102,7 +102,7 @@ export const updateDeliveryPartner = async (req: Request, res: Response) => {
   if (name) data.name = name;
   if (phone) data.phone = phone;
   if (vehicleType) data.vehicleType = vehicleType;
-  if (isActive) data.isActive = isActive;
+  data.isActive = isActive;
 
   try {
     const partner = await prisma.deliveryPartner.update({
@@ -123,35 +123,45 @@ export const assignDeliveryPartner = async (req: Request, res: Response) => {
     where: { id: req.params.id as string },
   });
 
+  if (!order) {
+    return res.status(404).json({ message: "Order not found" });
+  }
+
   const partner = await prisma.deliveryPartner.findUnique({
     where: { id: partnerId },
   });
 
+  if (!partner) {
+    return res.status(404).json({ message: "Delivery partner not found" });
+  }
+
   const otp = String(Math.floor(100000 + Math.random() * 900000)); // generate 6 digit OTP
 
-  let status = order?.status;
+  let status = order.status;
 
-  const history: any[] = Array.isArray(order?.statusHistory)
-    ? order?.statusHistory
+  const history: any[] = Array.isArray(order.statusHistory)
+    ? order.statusHistory
     : [];
 
-  if (order!.status === "Placed" || order!.status === "Confirmed") {
+  if (order.status === "Placed" || order.status === "Confirmed") {
     status = "Assigned";
     history.push({
       status: "Assigned",
       timestamp: new Date(),
-      note: `Order assigned to ${partner?.name}`,
+      note: `Order assigned to ${partner.name}`,
     });
   }
 
-  await prisma.order.update({
+  const updatedOrder = await prisma.order.update({
     where: { id: req.params.id as string },
     data: {
-      deliveryPartnerId: partner?.id,
-      deliveryOTP: otp,
+      deliveryPartner: {
+        connect: { id: partner.id },
+      },
+      deliveryOtp: otp,
       status,
       statusHistory: history,
     },
   });
-  res.json({order});
+  res.json({ order: updatedOrder });
 };
